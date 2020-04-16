@@ -24,3 +24,6 @@ class My_Custom_Generator(keras.utils.Sequence):
             for file_name in batch_x]) / 255.0, np.array(batch_y)
     def getNumber(self):
         return len(self.labels)
+
+    def print(self):
+        print('test')
