@@ -11,7 +11,7 @@ labels=[]
 shorten=False
 convert=False
 augment=False
-samples_n=2  # how many augmented images per image
+samples_n=1  # how many augmented images per image
 
 
 for f in glob.glob(root_directory):
@@ -29,7 +29,7 @@ print("labels : ",labels)
 
 if shorten == True:
 
-    for number, filename in enumerate(glob.glob(images_directory)):
+    for number, filename in enumerate(glob.glob(images_directory + '/*')):
         if filename.endswith(".jpg") or filename.endswith(".jpeg") or filename.endswith(".png"):
             try:
                 parent = os.path.dirname(filename)
