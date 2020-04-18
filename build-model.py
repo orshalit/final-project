@@ -53,10 +53,14 @@ X_train_filenames = np.load('X_train_filenames.npy')
 y_train = np.load('y_train.npy')
 X_test_filenames = np.load('X_test_filenames.npy')
 y_test = np.load('y_test.npy')
+X_val_filenames = np.load('X_val_filenames.npy')
+y_val = np.load('y_val.npy')
+
 
 '''send train and test to the Generator'''
 my_training_batch_generator = My_Custom_Generator(X_train_filenames, y_train, batch_size,input_shape)
 my_test_batch_generator = My_Custom_Generator(X_test_filenames, y_test, batch_size, input_shape)
+# my_val_batch_generator = My_Custom_Generator(X_val_filenames, y_test, batch_size, input_shape)
 
 
 '''build model or if model exists lets predict and run evaluations'''
