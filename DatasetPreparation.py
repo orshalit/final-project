@@ -92,12 +92,12 @@ if saveData == True:
 
 
 
-    # this is how you load
-    with open('label_to_integer.json') as a:
-        a = json.load(a)
-
-    with open('integer_to_label.json') as b:
-        b = json.load(b)
+    # # this is how you load
+    # with open('label_to_integer.json') as a:
+    #     a = json.load(a)
+    #
+    # with open('integer_to_label.json') as b:
+    #     b = json.load(b)
     filenames_shuffled = np.load('filenames_shuffled.npy')
     labels_shuffled = np.load('labels_shuffled.npy')
 

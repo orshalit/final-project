@@ -60,7 +60,7 @@ y_val = np.load('y_val.npy')
 '''send train and test to the Generator'''
 my_training_batch_generator = My_Custom_Generator(X_train_filenames, y_train, batch_size,input_shape)
 my_test_batch_generator = My_Custom_Generator(X_test_filenames, y_test, batch_size, input_shape)
-# my_val_batch_generator = My_Custom_Generator(X_val_filenames, y_test, batch_size, input_shape)
+my_val_batch_generator = My_Custom_Generator(X_val_filenames, y_test, batch_size, input_shape)
 
 
 '''build model or if model exists lets predict and run evaluations'''
@@ -82,7 +82,7 @@ if glob.glob(save_dir+'/*'):#TODO: make this work with the new architecture
 else:
     print("Buidling model......")
     kerasModel.pearl_type_model(my_training_batch_generator
-                                ,my_test_batch_generator
+                                ,my_val_batch_generator
                                 ,save_dir,model_name,batch_size,input_shape)
 
 
