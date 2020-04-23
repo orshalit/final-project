@@ -13,7 +13,7 @@ import keras
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Flatten
 from keras.layers import Dense, Conv2D, MaxPool2D , Flatten,MaxPooling2D
-from keras.models import load_model
+from keras.models import load_model, Model
 from keras.optimizers import Adam
 from keras.utils import np_utils, to_categorical
 import matplotlib.pyplot as plt
@@ -21,6 +21,7 @@ from skimage import data, color
 from skimage.transform import rescale, resize, downscale_local_mean
 from skimage.io import imread, imshow
 import pandas as pd
+from keras.preprocessing import image
 import kerasModel
 from DataGeneratorClass import My_Custom_Generator
 random.seed(0)
@@ -56,17 +57,19 @@ y_test = np.load('y_test.npy')
 X_val_filenames = np.load('X_val_filenames.npy')
 y_val = np.load('y_val.npy')
 
-
+print(len(y_val))
+exit(1)
 '''send train and test to the Generator'''
 my_training_batch_generator = My_Custom_Generator(X_train_filenames, y_train, batch_size,input_shape)
 my_test_batch_generator = My_Custom_Generator(X_test_filenames, y_test, batch_size, input_shape)
-my_val_batch_generator = My_Custom_Generator(X_val_filenames, y_test, batch_size, input_shape)
+my_val_batch_generator = My_Custom_Generator(X_val_filenames, y_val, batch_size, input_shape)
 
 
 '''build model or if model exists lets predict and run evaluations'''
 if glob.glob(save_dir+'/*'):#TODO: make this work with the new architecture
     my_model = load_model(save_dir+'/'+model_name)
-    # # y_pred1 = model.predict(X_test)
+    # n_test = my_test_batch_generator.getNumber()
+    # y_pred1 = Model.predict_generator(my_model,my_test_batch_generator,n_test//batch_size)
     # print('y_pred1 :', y_pred1)
     # y_pred = np.argmax(y_pred1, axis=1)
     # print('y_pred :', y_pred)
@@ -74,9 +77,19 @@ if glob.glob(save_dir+'/*'):#TODO: make this work with the new architecture
     # print(metrics.precision_score(y_test, y_pred, average="micro"))
     # print(metrics.recall_score(y_test, y_pred, average="micro"))
     # print(metrics.f1_score(y_test, y_pred, average="weighted"))
-
-    # Print confusion matrix
+    #
     # print(metrics.confusion_matrix(y_test, y_pred))
+
+    img = image.load_img("akoya1.png", target_size=(224, 224))
+    img = np.asarray(img)
+    plt.imshow(img)
+    img = np.expand_dims(img, axis=0)
+
+
+    output = my_model.predict(img)
+    output = np.argmax(output)
+    print(output)
+    print(integer_to_label[str(output)])
 
 
 else:

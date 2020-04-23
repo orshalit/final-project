@@ -11,7 +11,7 @@ dest_dir = "C:/Users/אור/Desktop/Pearls-Images/all_images"
 counter = 0
 
 move_dir = False
-saveData = False
+saveData = True
 
 '''moves all images to all_images'''
 if move_dir == True:# TODO: make this part generic, move all sub dir images to parent class dir and then delete sub dirs
@@ -57,7 +57,7 @@ if saveData == True:
         for file in files:
             if file.endswith('png'):
                 filenames.append(file)
-                print('f: ',filenames_counter)
+                # print('f: ',filenames_counter)
                 # print('l: ',labels_counter)
                 labels[filenames_counter, 0] = labels_counter
                 filenames_counter = filenames_counter + 1
@@ -132,8 +132,8 @@ if saveData == True:
     np.save('X_test_filenames.npy', X_test_filenames)
     np.save('y_test.npy', y_test)
 
-    np.save('X_val_filenames.npy', X_test_filenames)
-    np.save('y_val.npy', y_test)
+    np.save('X_val_filenames.npy', X_val_filenames)
+    np.save('y_val.npy', y_val)
 
     labels = images.getLabels()
     label_to_integer = {}

@@ -53,9 +53,9 @@ def pearl_type_model(my_training_batch_generator, my_test_batch_generator, save_
 
     n_train = My_Custom_Generator.getNumber(my_training_batch_generator)
     n_test = My_Custom_Generator.getNumber(my_test_batch_generator)
-
+    print('n_val: ',n_test)
     print('number of training images: ',n_train)
-    print('number of test images: ', n_test)
+    print('number of val images: ', n_test)
     model.fit_generator(generator=my_training_batch_generator,
                         steps_per_epoch = int(n_train // batch_size),
                         epochs = 10,
