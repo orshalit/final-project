@@ -17,11 +17,9 @@ from DataGeneratorClass import My_Custom_Generator
 from keras import optimizers
 
 def pearl_type_model_vgg16(my_training_batch_generator, my_test_batch_generator, save_dir=os.path.join(os.getcwd(), 'saved_models')
-                     , model_name='trained_model.h5'
                      , batch_size=32
                      , input_shape=(40,40,3)):
-
-
+    model_name = 'vgg16.h5'
     model = Sequential()
     model.add(Conv2D(input_shape=input_shape,filters=64,kernel_size=(3,3),padding="same", activation="relu"))
     model.add(Conv2D(filters=64,kernel_size=(3,3),padding="same", activation="relu"))
@@ -55,24 +53,33 @@ def pearl_type_model_vgg16(my_training_batch_generator, my_test_batch_generator,
     n_test = My_Custom_Generator.getNumber(my_test_batch_generator)
     print('number of training images: ',n_train)
     print('number of val images: ', n_test)
-    model.fit_generator(generator=my_training_batch_generator,
+    history = model.fit_generator(generator=my_training_batch_generator,
                         steps_per_epoch = int(n_train // batch_size),
-                        epochs = 10,
+                        epochs = 1,
                         verbose = 1,
                         validation_data = my_test_batch_generator,
                         validation_steps = int(n_test // batch_size))
 
+    hist_df = pd.DataFrame(history.history)
+
+
     if not os.path.isdir(save_dir):
         os.makedirs(save_dir)
     model_path = os.path.join(save_dir, model_name)
+    print('saves this model?!')
     model.save(model_path)
     print('Saved trained model at %s ' % model_path)
 
+    # save to json:
+    hist_json_file = 'vgg16_history.json'
+    with open(model_path + hist_json_file, mode='w') as f:
+        hist_df.to_json(f)
+
 def pearl_type_model_resnet50v2(my_training_batch_generator, my_test_batch_generator,save_dir=os.path.join(os.getcwd(), 'saved_models')
-                         , model_name='trained_model_resnet50v2.h5'
                          , batch_size=32
                          , input_shape=(40, 40, 3)):
-    restnet = ResNet50V2(include_top=False, weights=None, input_shape=input_shape, classes=len(integer_to_label))
+    model_name = 'trained_model_resnet50v2.h5'
+    restnet = ResNet50V2(include_top=False, weights=None, input_shape=input_shape, classes=4)
     output = restnet.layers[-1].output
     output = keras.layers.Flatten()(output)
     restnet = Model(restnet.input, output=output)
@@ -91,16 +98,30 @@ def pearl_type_model_resnet50v2(my_training_batch_generator, my_test_batch_gener
                   metrics=['accuracy'])
     model.summary()
 
+    n_train = My_Custom_Generator.getNumber(my_training_batch_generator)
+    n_test = My_Custom_Generator.getNumber(my_test_batch_generator)
+    print('number of training images: ', n_train)
+    print('number of val images: ', n_test)
+
     history = model.fit_generator(my_training_batch_generator,
-                                  steps_per_epoch=100,
-                                  epochs=2,
+                                  steps_per_epoch=1,#int(n_train // batch_size),
+                                  epochs=1,
                                   validation_data=my_test_batch_generator,
-                                  validation_steps=50,
+                                  validation_steps=1,#int(n_test // batch_size),
                                   verbose=1)
-    model.save('trained_model_resnet50v2.h5')
+
+    hist_df = pd.DataFrame(history.history)
 
     if not os.path.isdir(save_dir):
         os.makedirs(save_dir)
-    model_path = os.path.join(save_dir, model_name)
+    print('type of model name: ',model_name)
+    model_path = os.path.join(save_dir, str(model_name))
     model.save(model_path)
     print('Saved trained model at %s ' % model_path)
+
+    # save to json:
+    hist_json_file = 'resnet50v2_history.json'
+    with open(model_path + hist_json_file, mode='w') as f:
+        hist_df.to_json(f)
+
+
