@@ -1,5 +1,7 @@
 import glob
+import sys
 import os
+import pickle
 import imageAugmentor as images
 import random
 import collections
@@ -26,10 +28,14 @@ from keras.applications.resnet_v2 import ResNet50V2
 from keras.preprocessing import image
 import kerasModel
 from DataGeneratorClass import My_Custom_Generator
-# from kerastuner.applications import resnet,xception
-# from kerastuner.tuners import hyperband
-# import kerastuner as kt
-
+from prettytable import PrettyTable, PLAIN_COLUMNS
+import custom_model_eval
+os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' # disable tensorflow messages
+import tensorflow as tf
+tf.logging.set_verbosity(tf.logging.ERROR)
+import talos
+import custom_model
 random.seed(1)
 #=======================================================================================
 save_dir = os.path.join(os.getcwd(), 'saved_models')
@@ -131,9 +137,13 @@ else:
     #                             ,my_val_batch_generator
     #                             ,save_dir,batch_size,input_shape)
 
-    print("Buidling ResNet50V2 model......")
-    kerasModel.pearl_type_model_resnet50v2(my_training_batch_generator
-                                      , my_val_batch_generator
-                                      , save_dir,batch_size, input_shape)
+    # print("Buidling ResNet50V2 model......")
+    # kerasModel.pearl_type_model_resnet50v2(my_training_batch_generator
+    #                                   , my_val_batch_generator
+    #                                   , save_dir,batch_size, input_shape)
 
-
+    print('Building Custom NN eval....')
+    custom_model_eval.run_custom_model(my_training_batch_generator,my_val_batch_generator,input_shape)
+    talos_parameter_eval = custom_model_eval.load_object('example.pickle')
+    custom_model_eval.print_hyperparameter_search_stats(talos_parameter_eval)
+    custom_model_eval.print_eval_table(talos_parameter_eval)

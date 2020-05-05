@@ -15,6 +15,8 @@ from keras.utils import to_categorical
 from keras.applications.resnet_v2 import ResNet50V2
 from DataGeneratorClass import My_Custom_Generator
 from keras import optimizers
+import talos
+from talos.utils import SequenceGenerator
 
 def pearl_type_model_vgg16(my_training_batch_generator, my_test_batch_generator, save_dir=os.path.join(os.getcwd(), 'saved_models')
                      , batch_size=32
@@ -124,4 +126,29 @@ def pearl_type_model_resnet50v2(my_training_batch_generator, my_test_batch_gener
     with open(model_path + hist_json_file, mode='w') as f:
         hist_df.to_json(f)
 
-
+# def custom_net(x_train, y_train, x_val, y_val, params, save_dir=os.path.join(os.getcwd(), 'saved_models')
+#                      , input_shape=(40,40,3)):
+#     model = Sequential()
+#     model.add(Dense(params['first_neuron'], input_dim=input_shape,
+#                     activation=params['activation'],
+#                     kernel_initializer=params['kernel_initializer']))
+#
+#     model.add(Dropout(params['dropout']))
+#
+#     model.add(Dense(1, activation=params['last_activation'],
+#                     kernel_initializer=params['kernel_initializer']))
+#
+#     model.compile(loss=params['losses'],
+#                   optimizer=params['optimizer'],
+#                   metrics=['acc', talos.utils.metrics.f1score])
+#
+#
+#     history = model.fit_generator(SequenceGenerator(x_train,
+#                                                 y_train,
+#                                                 batch_size=params['batch_size']),
+#                                                 epochs=params['epochs'],
+#                                                 validation_data=SequenceGenerator(x_val, y_val,batch_size=params['batch_size']),
+#                                                 workers=2,
+#                                                 verbose=0)
+#
+#     return history, model
