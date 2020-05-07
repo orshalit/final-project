@@ -101,14 +101,14 @@ def print_hyperparameter_search_stats(t):
     print()
 
 
-tt = load_object('example.pickle')
-print_hyperparameter_search_stats(tt)
+# tt = load_object('example.pickle')
+# print_hyperparameter_search_stats(tt)
 
 
 def print_eval_table(talos_parameter_eval):
     print('print_eval_table: ')
-    print(tt['details'])
-    for ttt in tt['round_history']:
+    print(talos_parameter_eval['details'])
+    for ttt in talos_parameter_eval['round_history']:
         table = PrettyTable()
         table.set_style(PLAIN_COLUMNS)
         iterations = max([len(x) for x in ttt.values()])

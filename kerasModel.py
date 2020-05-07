@@ -12,7 +12,10 @@ from keras.layers import Input, Conv1D, Conv2D, MaxPooling1D, MaxPool2D, Dense, 
 from keras.optimizers import Adam
 from keras.layers.normalization import BatchNormalization
 from keras.utils import to_categorical
+from keras.applications import xception
 from keras.applications.resnet_v2 import ResNet50V2
+from keras_applications.resnet_common import ResNeXt101
+
 from DataGeneratorClass import My_Custom_Generator
 from keras import optimizers
 import talos
@@ -126,29 +129,55 @@ def pearl_type_model_resnet50v2(my_training_batch_generator, my_test_batch_gener
     with open(model_path + hist_json_file, mode='w') as f:
         hist_df.to_json(f)
 
-# def custom_net(x_train, y_train, x_val, y_val, params, save_dir=os.path.join(os.getcwd(), 'saved_models')
-#                      , input_shape=(40,40,3)):
-#     model = Sequential()
-#     model.add(Dense(params['first_neuron'], input_dim=input_shape,
-#                     activation=params['activation'],
-#                     kernel_initializer=params['kernel_initializer']))
-#
-#     model.add(Dropout(params['dropout']))
-#
-#     model.add(Dense(1, activation=params['last_activation'],
-#                     kernel_initializer=params['kernel_initializer']))
-#
-#     model.compile(loss=params['losses'],
-#                   optimizer=params['optimizer'],
-#                   metrics=['acc', talos.utils.metrics.f1score])
-#
-#
-#     history = model.fit_generator(SequenceGenerator(x_train,
-#                                                 y_train,
-#                                                 batch_size=params['batch_size']),
-#                                                 epochs=params['epochs'],
-#                                                 validation_data=SequenceGenerator(x_val, y_val,batch_size=params['batch_size']),
-#                                                 workers=2,
-#                                                 verbose=0)
-#
-#     return history, model
+def pearl_type_model_resnext101(my_training_batch_generator, my_test_batch_generator,save_dir=os.path.join(os.getcwd(), 'saved_models')
+                         , batch_size=32
+                         , input_shape=(40, 40, 3)):
+    model_name = 'trained_model_resnext101.h5'
+    restnet = ResNeXt101(include_top=False, weights=None, input_shape=input_shape, classes=4
+                         ,backend = keras.backend
+                         , layers = keras.layers
+                         , models = keras.models
+                         , utils = keras.utils)
+    output = restnet.layers[-1].output
+    output = keras.layers.Flatten()(output)
+    restnet = Model(restnet.input, output=output)
+    for layer in restnet.layers:
+        layer.trainable = False
+    restnet.summary()
+    model = Sequential()
+    model.add(restnet)
+    model.add(Dense(512, activation='relu', input_dim=input_shape))
+    model.add(Dropout(0.3))
+    model.add(Dense(512, activation='relu'))
+    model.add(Dropout(0.3))
+    model.add(Dense(4, activation='softmax'))
+    model.compile(loss=keras.losses.categorical_crossentropy,
+                  optimizer=optimizers.RMSprop(lr=2e-5),
+                  metrics=['accuracy'])
+    model.summary()
+
+    n_train = My_Custom_Generator.getNumber(my_training_batch_generator)
+    n_test = My_Custom_Generator.getNumber(my_test_batch_generator)
+    print('number of training images: ', n_train)
+    print('number of val images: ', n_test)
+
+    history = model.fit_generator(my_training_batch_generator,
+                                  steps_per_epoch=1,  # int(n_train // batch_size),
+                                  epochs=1,
+                                  validation_data=my_test_batch_generator,
+                                  validation_steps=1,  # int(n_test // batch_size),
+                                  verbose=1)
+
+    hist_df = pd.DataFrame(history.history)
+
+    if not os.path.isdir(save_dir):
+        os.makedirs(save_dir)
+    print('type of model name: ', model_name)
+    model_path = os.path.join(save_dir, str(model_name))
+    model.save(model_path)
+    print('Saved trained model at %s ' % model_path)
+
+    # save to json:
+    hist_json_file = 'resnext101_history.json'
+    with open(model_path + hist_json_file, mode='w') as f:
+        hist_df.to_json(f)
