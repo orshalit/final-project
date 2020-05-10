@@ -11,7 +11,7 @@ dest_dir = "C:/Users/אור/Desktop/Pearls-Images/all_images"
 counter = 0
 
 move_dir = False
-saveData = True
+saveData = False
 
 '''moves all images to all_images'''
 if move_dir == True:# TODO: make this part generic, move all sub dir images to parent class dir and then delete sub dirs
