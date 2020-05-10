@@ -11,7 +11,7 @@ dest_dir = "C:/Users/אור/Desktop/Pearls-Images/all_images"
 counter = 0
 
 move_dir = False
-saveData = False
+saveData = True
 
 '''moves all images to all_images'''
 if move_dir == True:# TODO: make this part generic, move all sub dir images to parent class dir and then delete sub dirs
@@ -67,8 +67,8 @@ if saveData == True:
                 labels[filenames_counter, 0] = labels_counter
                 filenames_counter = filenames_counter + 1
         if currentdir != train_dir:
-            integer_to_label[currentdir] = labels_counter
-            label_to_integer[labels_counter] = currentdir
+            integer_to_label[labels_counter] = currentdir
+            label_to_integer[currentdir] = labels_counter
             labels_list.append(currentdir)
         labels_counter = labels_counter + 1
 
