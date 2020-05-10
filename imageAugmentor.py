@@ -18,9 +18,9 @@ for f in glob.glob(root_directory):
     if os.path.isdir(f):
         folders.append(os.path.abspath(f))
 
-print("Folders (classes) found: %s " % [os.path.split(x)[1] for x in folders])# class per folder
-labels=[os.path.split(x)[1] for x in folders]   #create list of classes
-print("labels : ",labels)
+# print("Folders (classes) found: %s " % [os.path.split(x)[1] for x in folders])# class per folder
+# labels=[os.path.split(x)[1] for x in folders]   #create list of classes
+# print("labels : ",labels)
 
 
 
@@ -83,8 +83,8 @@ if augment == True:
 
 
 
-def getLabels():
-    # print("Folders (classes) found: %s " % [os.path.split(x)[1] for x in folders])# class per folder
-    labels=[os.path.split(x)[1] for x in folders]   #create list of classes
-    # print("labels : ",labels)
-    return labels
+# def getLabels():
+#     # print("Folders (classes) found: %s " % [os.path.split(x)[1] for x in folders])# class per folder
+#     labels=[os.path.split(x)[1] for x in folders]   #create list of classes
+#     # print("labels : ",labels)
+#     return labels

@@ -94,9 +94,9 @@ def pearl_type_model_resnet50v2(my_training_batch_generator, my_test_batch_gener
     model = Sequential()
     model.add(restnet)
     model.add(Dense(512, activation='relu', input_dim=input_shape))
-    model.add(Dropout(0.3))
+    # model.add(Dropout(0.3))
     model.add(Dense(512, activation='relu'))
-    model.add(Dropout(0.3))
+    # model.add(Dropout(0.3))
     model.add(Dense(4, activation='softmax'))
     model.compile(loss=keras.losses.categorical_crossentropy,
                   optimizer=optimizers.RMSprop(lr=2e-5),
@@ -147,12 +147,12 @@ def pearl_type_model_resnext101(my_training_batch_generator, my_test_batch_gener
     model = Sequential()
     model.add(restnet)
     model.add(Dense(512, activation='relu', input_dim=input_shape))
-    model.add(Dropout(0.3))
+    # model.add(Dropout(0.3))
     model.add(Dense(512, activation='relu'))
-    model.add(Dropout(0.3))
+    # model.add(Dropout(0.3))
     model.add(Dense(4, activation='softmax'))
     model.compile(loss=keras.losses.categorical_crossentropy,
-                  optimizer=optimizers.RMSprop(lr=2e-5),
+                  optimizer=optimizers.adam(lr=0.01),
                   metrics=['accuracy'])
     model.summary()
 

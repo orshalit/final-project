@@ -49,20 +49,32 @@ if saveData == True:
     images_dir = dest_dir
     filenames_counter = 0
     labels_counter = -1
+    labels_list = []
+    integer_to_label = {}
+    label_to_integer = {}
     print('len of filenames before saving: ',len(filenames))
     print('shape of labels before saving: ',labels.shape)
 
     for subdir, dirs, files in os.walk(train_dir):
-        print(files)
+        print(subdir.split(os.path.sep)[-1])
+        currentdir = subdir.split(os.path.sep)[-1]
         for file in files:
+
             if file.endswith('png'):
                 filenames.append(file)
                 # print('f: ',filenames_counter)
                 # print('l: ',labels_counter)
                 labels[filenames_counter, 0] = labels_counter
                 filenames_counter = filenames_counter + 1
+        if currentdir != train_dir:
+            integer_to_label[currentdir] = labels_counter
+            label_to_integer[labels_counter] = currentdir
+            labels_list.append(currentdir)
         labels_counter = labels_counter + 1
 
+    print('int to label: ',integer_to_label)
+    print('label to int: ',label_to_integer)
+    # print('labels: ',labels[570])
     print('len of filenames: ',len(filenames))
     print('shape of labels: ',labels.shape)
 
@@ -76,7 +88,6 @@ if saveData == True:
 
     # One hot vector representation of labels
     y_labels_one_hot = to_categorical(labels)
-
     # saving the y_labels_one_hot array as a .npy file
     np.save('labels.npy', y_labels_one_hot)
 
@@ -135,16 +146,6 @@ if saveData == True:
     np.save('X_val_filenames.npy', X_val_filenames)
     np.save('y_val.npy', y_val)
 
-    labels = images.getLabels()
-    label_to_integer = {}
-    integer_to_label = {}
-    for index, value in enumerate(labels):    #makes class dict for every folder
-        label_to_integer[value] = index
-        integer_to_label[index] = value
-        index = index + 1
-
-
-
     #save dict of label to integer and integer to label as json for later use
 
     with open('label_to_integer.json', 'w') as fp:
@@ -152,5 +153,9 @@ if saveData == True:
 
     with open('integer_to_label.json', 'w') as fp:
         json.dump(integer_to_label, fp)
+
+    with open('labels_list.json', 'w') as fp:
+        json.dump(labels_list, fp)
+
 
 

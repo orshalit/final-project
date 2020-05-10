@@ -45,10 +45,8 @@ random.seed(1)
 #=======================================================================================
 save_dir = os.path.join(os.getcwd(), 'saved_models')
 model_name = 'trained_model.h5'
-labels = images.getLabels()
 batch_size = 64
 input_shape = (40, 40, 3)
-num_classes = len(labels)
 #=======================================================================================
 #TODO:fix label to integer dict
 '''load labels to integer dict and integer to label dict for later use after model.predict'''
@@ -58,11 +56,14 @@ with open('label_to_integer.json') as a:
 with open('integer_to_label.json') as b:
     integer_to_label = json.load(b)
 
+with open('labels_list.json') as b:
+    labels_list = json.load(b)
+
 print('dict of label to integer: ',label_to_integer)
 print('dict of integer to label: ',integer_to_label)
-
+print('labels list: ',labels_list)
 #=======================================================================================
-
+num_classes = len(labels_list)
 
 
 
@@ -103,6 +104,10 @@ if build == False:
     n_test = my_test_batch_generator.getNumber()
     y_pred1 = Model.predict_generator(my_model,my_test_batch_generator,n_test/batch_size)
     # score = Model.evaluate_generator(my_model, my_test_batch_generator, n_test // batch_size)
+    # score, acc = Model.evaluate_generator(my_model,my_test_batch_generator,
+    #                             batch_size)
+    # print('Test score:', score)
+    # print('Test accuracy:', acc)
     # print('Score: ',score)
     print('y_pred1 before argmax :', y_pred1)
     print('y_pred1 before len: ', len(y_pred1))
@@ -121,12 +126,15 @@ if build == False:
     # print('labels: ',labels)
     print(metrics.confusion_matrix(y_test, y_pred))
 
-    img = image.load_img("akoya1.png", target_size=(40, 40))
+    # img = image.load_img("akoya1.png", target_size=(40, 40))
+    # img = np.asarray(img)
+    # plt.imshow(img)
+    # img = np.expand_dims(img, axis=0)
+    img = resize(imread('akoya1.png'),input_shape)
     img = np.asarray(img)
     plt.imshow(img)
     img = np.expand_dims(img, axis=0)
-
-
+    print('img shape: ',img.shape)
     output = my_model.predict(img)
     print('real label to int: ',label_to_integer['akoya'])
     print('label before argmax:',output)
