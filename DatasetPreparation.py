@@ -13,6 +13,8 @@ counter = 0
 move_dir = False
 saveData = False
 
+
+
 '''moves all images to all_images'''
 if move_dir == True:# TODO: make this part generic, move all sub dir images to parent class dir and then delete sub dirs
     for subdir, dirs, files in os.walk(train_dir):
@@ -40,7 +42,7 @@ if move_dir == True:# TODO: make this part generic, move all sub dir images to p
 if saveData == True:
     subdirs, dirs, files = os.walk(dest_dir).__next__()
     m = len(files)
-    print(m)
+    print('total amount of images: ',m)
 
     filenames = []
     labels = np.zeros((m, 1))
@@ -61,6 +63,7 @@ if saveData == True:
         for file in files:
 
             if file.endswith('png'):
+                #if labels_counter == 2 or labels_counter == 3:
                 filenames.append(file)
                 # print('f: ',filenames_counter)
                 # print('l: ',labels_counter)
@@ -71,7 +74,7 @@ if saveData == True:
             label_to_integer[currentdir] = labels_counter
             labels_list.append(currentdir)
         labels_counter = labels_counter + 1
-
+    labels =  labels[:len(filenames)]
     print('int to label: ',integer_to_label)
     print('label to int: ',label_to_integer)
     # print('labels: ',labels[570])

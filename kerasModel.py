@@ -20,7 +20,14 @@ from DataGeneratorClass import My_Custom_Generator
 from keras import optimizers
 
 #tbCallBack = keras.callbacks.TensorBoard(log_dir='./Graph', histogram_freq=0, write_graph=True, write_images=True)
-
+from keras.callbacks import EarlyStopping, ReduceLROnPlateau
+earlystop = EarlyStopping(patience=10)
+learning_rate_reduction = ReduceLROnPlateau(monitor='val_acc',
+                                            patience=2,
+                                            verbose=1,
+                                            factor=0.5,
+                                            min_lr=0.00001)
+callbacks = [earlystop, learning_rate_reduction]
 
 def pearl_type_model_vgg16(my_training_batch_generator, my_test_batch_generator, save_dir=os.path.join(os.getcwd(), 'saved_models')
                      , batch_size=32
@@ -76,10 +83,10 @@ def pearl_type_model_vgg16(my_training_batch_generator, my_test_batch_generator,
     model.save(model_path)
     print('Saved trained model at %s ' % model_path)
 
-    # save to json:
-    hist_json_file = 'vgg16_history.json'
-    with open(model_path + hist_json_file, mode='w') as f:
-        hist_df.to_json(f)
+    # save to pickle:
+    hist_file = 'vgg16_history'
+    with open(model_path + hist_file, 'wb') as file_pi:
+        pickle.dump(history, file_pi)
 
 def pearl_type_model_resnet50v2(my_training_batch_generator, my_test_batch_generator,save_dir=os.path.join(os.getcwd(), 'saved_models')
                          , batch_size=32
@@ -126,16 +133,16 @@ def pearl_type_model_resnet50v2(my_training_batch_generator, my_test_batch_gener
     model.save(model_path)
     print('Saved trained model at %s ' % model_path)
 
-    # save to json:
-    hist_json_file = 'resnet50v2_history.json'
-    with open(model_path + hist_json_file, mode='w') as f:
-        hist_df.to_json(f)
+    # save to pickle:
+    hist_file = 'resnext50v2_history'
+    with open(model_path + hist_file, 'wb') as file_pi:
+        pickle.dump(history, file_pi)
 
 def pearl_type_model_resnext101(my_training_batch_generator, my_test_batch_generator,save_dir=os.path.join(os.getcwd(), 'saved_models')
                          , batch_size=32
                          , input_shape=(40, 40, 3)):
     model_name = 'trained_model_resnext101.h5'
-    restnet = ResNeXt101(include_top=False, weights=None, input_shape=input_shape, classes=2
+    restnet = ResNeXt101(include_top=False, weights=None, input_shape=input_shape, classes=4
                          ,backend = keras.backend
                          , layers = keras.layers
                          , models = keras.models
@@ -149,11 +156,12 @@ def pearl_type_model_resnext101(my_training_batch_generator, my_test_batch_gener
     model = Sequential()
     model.add(restnet)
     model.add(Dense(512, activation='relu', input_dim=input_shape))
+
     # model.add(Dropout(0.3))
     model.add(Dense(512, activation='relu'))
     # model.add(Dropout(0.3))
     model.add(Dense(4, activation='softmax'))
-    model.compile(loss=keras.losses.categorical_crossentropy,
+    model.compile(loss='categorical_crossentropy',
                   optimizer=optimizers.adam(lr=0.01),
                   metrics=['accuracy'])
     model.summary()
@@ -182,7 +190,7 @@ def pearl_type_model_resnext101(my_training_batch_generator, my_test_batch_gener
 
     hist_file = 'resnext101_history'
     with open(model_path + hist_file, 'wb') as file_pi:
-        pickle.dump(history.history, file_pi)
+        pickle.dump(history, file_pi)
     # # save to json:
     # hist_json_file = 'resnext101_history.json'
     # with open(model_path + hist_json_file, mode='w') as f:
