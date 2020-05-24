@@ -6,31 +6,64 @@ from sklearn.utils import shuffle
 import json
 import imageAugmentor as images
 from sklearn.model_selection import train_test_split
-train_dir = "C:/Users/אור/Desktop/Pearls-Images/train"
-dest_dir = "C:/Users/אור/Desktop/Pearls-Images/all_images"
+import glob
+
+train_dir = "C:/Users/אור/Desktop/Pearls-Images/train"                   #enter train folder path
+dest_dir = "C:/Users/אור/Desktop/Pearls-Images/all_images"               #enter all_images folder path (may need to create an empty folder called all_images)
 counter = 0
+n_samples = 10 #number of samples for to augment each class
+"""convert and/or augment"""
+convert = False #change to True to activate
+augment = False #change to True to activate
+"""orginize folders and images"""
+move_dir = False    #change to True to activate
+"""preprocess images and create dicts and lists of items"""
+saveData = False    #change to True to activate
 
-move_dir = False
-saveData = False
 
 
+''' changes all the names in the dataset to numbers, 
+    if there is a problem changing again then change the prefix 'image' in os.rename to be something else'''
+def shorten_file_names():
+    number = 1
+    for subdir, dirs, files in os.walk(train_dir):
+        for file in files:
+            full_path = os.path.join(subdir, file)
+            os.makedirs(os.path.dirname(full_path), exist_ok=True)
+            if file.endswith(".jpg") or file.endswith(".jpeg") or file.endswith(".png"):
+                # dir_path = os.path.dirname(os.path.abspath(full_path))
+                try:
+                    os.rename(full_path, subdir + '/' +'image' + "{0}".format(number) + '.png')
+                except OSError as e:
+                    print("Something happened, cannot change filename:", e)
+                number += 1
+
+
+images.root_directory= train_dir+'/*'
+images.images_directory = train_dir+'/*/*'
+if convert == True:
+    images.convert_to_png()
+if augment == True:
+    images.augment_images(n_samples)
 
 '''moves all images to all_images'''
 if move_dir == True:# TODO: make this part generic, move all sub dir images to parent class dir and then delete sub dirs
     for subdir, dirs, files in os.walk(train_dir):
-        # print(files)
+        print(subdir)
         for file in files:
             full_path = os.path.join(subdir, file)
             os.makedirs(os.path.dirname(full_path), exist_ok=True)
             parent_dir = os.path.dirname(subdir)
             if parent_dir != train_dir:
                 shutil.copy2(full_path,parent_dir)
-            # print('full path: ',full_path)
-            # print('dest dir: ',dest_dir)
-            # print('sub dir: ',subdir)
-            # print('parent dir: ',parent_dir)
-            # print('dirs: ',dirs)
-            # print('file: ',file)
+                os.remove(full_path)
+            """check if sub dir is empty and delete"""
+            if not os.listdir(subdir):
+                os.rmdir(subdir)
+    shorten_file_names()
+    for subdir, dirs, files in os.walk(train_dir):
+        for file in files:
+            full_path = os.path.join(subdir, file)
             shutil.copy2(full_path, dest_dir)
             counter = counter + 1
     print('Moved %s files to %s '% (counter,dest_dir))
@@ -159,6 +192,5 @@ if saveData == True:
 
     with open('labels_list.json', 'w') as fp:
         json.dump(labels_list, fp)
-
 
 

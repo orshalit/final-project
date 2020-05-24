@@ -2,7 +2,6 @@ import glob
 import sys
 import os
 import pickle
-import imageAugmentor as images
 import random
 import collections
 import numpy as np
@@ -30,12 +29,7 @@ import kerasModel
 from DataGeneratorClass import My_Custom_Generator
 from prettytable import PrettyTable, PLAIN_COLUMNS
 import custom_model_eval
-#os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
-#os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' # disable tensorflow messages
-import tensorflow as tf
-#tf.logging.set_verbosity(tf.logging.ERROR)
 from matplotlib import pyplot
-
 import talos
 import custom_model
 print('checkkkk')
@@ -110,15 +104,14 @@ build = False
 if build == False:
     # model_name = 'trained_model_resnext101.h5'
     # my_model = load_model(save_dir+'/'+model_name)
-    # # my_model = load_model('trained_model_resnet50v2.h5')
     # n_test = my_test_batch_generator.getNumber()
     # y_pred1 = Model.predict_generator(my_model,my_test_batch_generator,n_test/batch_size)
     #
-    # # score, acc = Model.evaluate_generator(my_model,my_test_batch_generator,
-    # #                             batch_size)
-    # # print('Test score:', score)
-    # # print('Test accuracy:', acc)
-    # # print('Score: ',score)
+    # score, acc = Model.evaluate_generator(my_model,my_test_batch_generator,
+    #                             batch_size)
+    # print('Test score:', score)
+    # print('Test accuracy:', acc)
+    # print('Score: ',score)
     # print('y_pred1 before argmax :', y_pred1[:100])
     # print('y_pred1 before len: ', len(y_pred1))
     # print('y_test before argmax :', y_test)
@@ -164,7 +157,7 @@ if build == False:
     #
     # print(y_test[:5])
     # print(y_pred[:5])
-    with open(save_dir+'/'+'trained_model_resnext101.h5resnext101_history','rb') as b:
+    with open(save_dir+'/'+'trained_model_resnext101_6_epoch20.h5_history','rb') as b:
         history = pickle.load(b)
     print(history.history.keys())
 
@@ -181,18 +174,7 @@ if build == False:
     legend = plt.legend(loc='best', shadow=True)
     plt.tight_layout()
     plt.show()
-    # pyplot.subplot(211)
-    # pyplot.title('Loss')
-    # pyplot.plot(str(history['loss']), label='train')
-    # pyplot.plot(str(history['val_loss']), label='test')
-    # pyplot.legend()
-    # # plot accuracy during training
-    # pyplot.subplot(212)
-    # pyplot.title('Accuracy')
-    # pyplot.plot(str(history['accuracy']), label='train')
-    # pyplot.plot(str(history['val_accuracy']), label='test')
-    # pyplot.legend()
-    # pyplot.show()
+
 
 
 
