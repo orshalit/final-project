@@ -1,6 +1,10 @@
 # final-project
 pearl type recognition
 
+Dataset: 
+https://drive.google.com/file/d/1JjLuvxLZ2RwNe5iW6sHPVEYgH5GBqRKm/view?usp=sharing
+
+
 this is a simple explanation, to activate and run it requires some manual changing of parameters!!!
 
 images should be stored in train folder under subdirs with the name of the class, and an empty folder all_images.
