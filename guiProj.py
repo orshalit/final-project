@@ -1,5 +1,6 @@
 import PySimpleGUI as sg
 
+
 sg.theme('Dark Blue 3')
 
 layout = [[sg.Text('Choose an image to classify: ',font=("Helvetica", 30))],
